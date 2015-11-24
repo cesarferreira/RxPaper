@@ -41,7 +41,7 @@ Delete data for one key.
 ```java
 
 RxPaper.with(ctx)
-        .delete("countries")
+        .delete(key)
         .subscribe();
 ```
 
