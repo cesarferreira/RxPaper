@@ -17,8 +17,6 @@ Paper creates separate data file for each key.
 ```java
 RxPaper.with(ctx)
         .write(key, value)
-        .subscribeOn(Schedulers.io())               // optional
-        .observeOn(AndroidSchedulers.mainThread())  // optional
         .subscribe(success -> /* all good */ );
 
 ```
@@ -32,8 +30,6 @@ Use default values if object doesn't exist in the storage.
 
 RxPaper.with(ctx)
         .read(key, defaultPersonValue)
-        .subscribeOn(Schedulers.io())               // optional
-        .observeOn(AndroidSchedulers.mainThread())  // optional
         .subscribe(person -> /* all good */ );
 
 ```
@@ -67,6 +63,19 @@ Paper.book("custom-book")...;
 
 Any changes in one book doesn't affect to others books.
 -->
+
+## Important information
+
+Don't forget to specify which threads you want to use before subscribing to any data manipulation, or else it'll run in the UI thread.
+
+```java
+...
+.subscribeOn(Schedulers.io())
+.observeOn(AndroidSchedulers.mainThread())
+.subscribe(...
+ ```
+
+
 #### Handle data structure changes
 Class fields which has been removed will be ignored on restore and new fields will have their default values. For example, if you have following data class saved in Paper storage:
 
@@ -130,8 +139,8 @@ The [Kryo](https://github.com/EsotericSoftware/kryo) is used for object graph se
 #### Benchmark results
 Running [Benchmark](https://github.com/pilgr/Paper/blob/master/paperdb/src/androidTest/java/io/paperdb/benchmark/Benchmark.java) on Nexus 4, in ms:
 
-| Benchmark                 | Paper    | [Hawk](https://github.com/orhanobut/hawk) | [sqlite](http://developer.android.com/reference/android/database/sqlite/package-summary.html) |
-|---------------------------|----------|----------|----------|
-| Read/write 500 contacts   | 187      | 447      |          |
-| Write 500 contacts        | 108      | 221      |          |
-| Read 500 contacts         | 79       | 155      |          |
+| Benchmark                 | Paper    | [Hawk](https://github.com/orhanobut/hawk)
+|---------------------------|----------|----------
+| Read/write 500 contacts   | 187      | 447                |
+| Write 500 contacts        | 108      | 221               |
+| Read 500 contacts         | 79       | 155                |
