@@ -2,12 +2,10 @@ package com.cesarferreira.rxpaper.sample;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.cesarferreira.rxpaper.RxPaper;
 
@@ -17,83 +15,178 @@ import rx.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
+    private Context mContext = null;
+    private TextView targetTextView;
+
+    private Person defaultValue = null;
+    private final String key = "PERSON_KEY";
+    private String mCustomBook = "SOME_BOOK";
+    Person person = new Person("Cesar", "ferreira");
+    Person anotherPerson = new Person("Ivo", "ferreira");
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
+        mContext = getApplicationContext();
 
-        final Context ctx = getApplicationContext();
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-
-                Person value = new Person("cesar", "ferreira");
-
-                final String key = "key";
-
-                RxPaper.with(ctx)
-                        .write(key, value)
-                        .subscribeOn(Schedulers.computation())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber<Boolean>() {
-                            @Override
-                            public void onCompleted() {
-
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-
-                            }
-
-                            @Override
-                            public void onNext(Boolean isSuccessfull) {
-                                if (isSuccessfull) {
-                                    log("SUCCESS WRITE!!!");
-
-
-                                    Person defaultValue = null;
-
-                                    RxPaper.with(ctx)
-                                            .read(key, defaultValue)
-                                            .subscribeOn(Schedulers.computation())
-                                            .observeOn(AndroidSchedulers.mainThread())
-                                            .subscribe(new Subscriber<Person>() {
-                                                @Override
-                                                public void onCompleted() {
-
-                                                }
-
-                                                @Override
-                                                public void onError(Throwable e) {
-
-                                                }
-
-                                                @Override
-                                                public void onNext(Person person) {
-                                                    log(String.valueOf(person));
-
-                                                    Snackbar.make(view, String.valueOf(person), Snackbar.LENGTH_LONG)
-                                                            .setAction("Action", null).show();
-
-                                                }
-                                            });
-                                }
-                            }
-                        });
-            }
-        });
+        targetTextView = (TextView) findViewById(R.id.targetTextView);
 
     }
+
 
     private void log(String s) {
-        Log.d("tag", s);
+        Log.d("rxpaper", s);
+        targetTextView.setText(s);
     }
 
 
+    public void writeCustom(View view) {
+        RxPaper.with(mContext, mCustomBook)
+                .write(key, anotherPerson)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Boolean isSuccessfull) {
+                        if (isSuccessfull) {
+                            log("Custom write success!!!");
+
+                        }
+                    }
+
+                });
+    }
+
+    public void write(View view) {
+        RxPaper.with(mContext)
+                .write(key, person)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Boolean isSuccessfull) {
+                        if (isSuccessfull) {
+                            log("Write success!!!");
+
+
+                        }
+                    }
+
+                });
+    }
+
+    public void readCustom(View view) {
+        RxPaper.with(mContext, mCustomBook)
+                .read(key, defaultValue)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Person>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Person person) {
+                        log(String.valueOf(person));
+                    }
+                });
+    }
+
+    public void read(View view) {
+        RxPaper.with(mContext)
+                .read(key, defaultValue)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Person>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Person person) {
+                        log(String.valueOf(person));
+
+
+                    }
+                });
+    }
+
+    public void destroy(View view) {
+        RxPaper.with(mContext)
+                .destroy()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Boolean person) {
+                        log("Data destroyed");
+                    }
+                });
+
+
+        RxPaper.with(mContext, mCustomBook)
+                .destroy()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Boolean person) {
+                        log("Data destroyed");
+                    }
+                });
+    }
 }

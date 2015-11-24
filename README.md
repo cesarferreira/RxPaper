@@ -1,12 +1,11 @@
 # RxPaper
 
-RxPaper is a [RxJava](https://github.com/ReactiveX/RxJava) wrapper for the cool [Paper library](https://github.com/pilgr/Paper), a [fast](#benchmark-results) NoSQL data storage for Android that lets you save/restore Java objects by using efficient [Kryo](https://github.com/EsotericSoftware/kryo) serialization and handling data structure changes automatically.
-
+RxPaper is a [RxJava](https://github.com/ReactiveX/RxJava) wrapper for the cool [paper](https://github.com/pilgr/Paper) library, a [fast](#benchmark-results) NoSQL data storage for Android that lets you **save/restore** Java objects by using efficient [Kryo](https://github.com/EsotericSoftware/kryo) serialization and handling data structure changes automatically.
 ![Paper icon](https://raw.githubusercontent.com/pilgr/Paper/master/paper_icon.png)
 
 #### Add dependency
 ```groovy
-compile 'com.cesarferreira.rxpaper:rxpaper:0.1.0'
+compile 'com.cesarferreira.rxpaper:rxpaper:0.2.1'
 ```
 
 
@@ -20,6 +19,7 @@ RxPaper.with(ctx)
         .subscribe(success -> /* all good */ );
 
 ```
+I'm serious: **Your custom classes must have no-arg constructor.**
 
 #### Read
 Read data objects. Paper instantiates exactly the classes which has been used in saved data. The limited backward and forward compatibility is supported. See [Handle data class changes](#handle-data-structure-changes).
@@ -39,34 +39,32 @@ RxPaper.with(ctx)
 Delete data for one key.
 
 ```java
-
 RxPaper.with(ctx)
-        .delete(key)
-        .subscribe();
+       .delete(key)
+       .subscribe();
 ```
 
 Completely destroys Paper storage.
 
 ```java
 RxPaper.with(ctx)
-        .destroy()
-        .subscribe();
+       .destroy()
+       .subscribe();
 ```
 
-<!--
 #### Use custom book
 You can create custom Book with separate storage using
 
 ```java
-Paper.book("custom-book")...;
+RxPaper.with(ctx, "custom-book")...;
 ```
 
 Any changes in one book doesn't affect to others books.
--->
+
 
 ## Important information
 
-Don't forget to specify which threads you want to use before subscribing to any data manipulation, or else it'll run in the UI thread.
+Don't forget to specify which threads you want to use before subscribing to any data manipulation, or else it'll run on the UI thread.
 
 ```java
 ...
