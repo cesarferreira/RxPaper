@@ -39,30 +39,28 @@ RxPaper.with(ctx)
 Delete data for one key.
 
 ```java
-
 RxPaper.with(ctx)
-        .delete("countries")
-        .subscribe();
+       .delete(key)
+       .subscribe();
 ```
 
 Completely destroys Paper storage.
 
 ```java
 RxPaper.with(ctx)
-        .destroy()
-        .subscribe();
+       .destroy()
+       .subscribe();
 ```
 
-<!--
 #### Use custom book
 You can create custom Book with separate storage using
 
 ```java
-Paper.book("custom-book")...;
+RxPaper.with(ctx, "custom-book")...;
 ```
 
 Any changes in one book doesn't affect to others books.
--->
+
 
 ## Important information
 
