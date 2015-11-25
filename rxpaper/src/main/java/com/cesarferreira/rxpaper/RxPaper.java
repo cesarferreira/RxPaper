@@ -64,7 +64,7 @@ public class RxPaper {
 
                         subscriber.onNext(true);
                     } catch (Exception e) {
-                        subscriber.onError(new UnableToPerformOperationException("Can't delete"));
+                        subscriber.onError(new UnableToPerformOperationException("Can't write"));
                     }
                     subscriber.onCompleted();
 
@@ -102,7 +102,11 @@ public class RxPaper {
                         value = Paper.book().read(key, defaultValue);
                     }
 
-                    subscriber.onNext(value);
+                    if (value == null) {
+                        subscriber.onError(new UnableToPerformOperationException(key + " is empty"));
+                    } else {
+                        subscriber.onNext(value);
+                    }
                     subscriber.onCompleted();
 
                 }
@@ -136,7 +140,12 @@ public class RxPaper {
                         value = Paper.book().read(key);
                     }
 
-                    subscriber.onNext(value);
+                    if (value == null) {
+                        subscriber.onError(new UnableToPerformOperationException(key + " is empty"));
+                    } else {
+                        subscriber.onNext(value);
+                    }
+
                     subscriber.onCompleted();
 
                 }
@@ -192,7 +201,7 @@ public class RxPaper {
                         }
                         subscriber.onNext(true);
                     } catch (Exception e) {
-                        subscriber.onError(new UnableToPerformOperationException("Can't delete"));
+                        subscriber.onError(new UnableToPerformOperationException("Can't destroy"));
                     }
                     subscriber.onCompleted();
 
