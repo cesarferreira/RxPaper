@@ -48,10 +48,24 @@
             android:onClick="read"
             android:text="Read" />
 
-        <android.support.v7.widget.AppCompatButton
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="destroy"
-            android:text="Destroy data" />
+            android:orientation="horizontal">
+
+            <android.support.v7.widget.AppCompatButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="50"
+                android:onClick="destroyCustom"
+                android:text="Destroy custom" />
+
+            <android.support.v7.widget.AppCompatButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="50"
+                android:onClick="destroy"
+                android:text="Destroy data" />
+        </LinearLayout>
     </LinearLayout>
 </RelativeLayout>
