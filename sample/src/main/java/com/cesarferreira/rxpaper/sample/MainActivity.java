@@ -138,8 +138,6 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onNext(Person person) {
                         log(String.valueOf(person));
-
-
                     }
                 });
     }

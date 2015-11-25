@@ -3,6 +3,8 @@ package com.cesarferreira.rxpaper;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.cesarferreira.rxpaper.exceptions.UnableToPerformOperationException;
+
 import io.paperdb.Paper;
 import rx.Observable;
 import rx.Subscriber;
@@ -30,7 +32,7 @@ public class RxPaper {
 
     private RxPaper(Context context, String customBook) {
         this.mContext = context;
-        this.mCustomBook = customBook;
+        mCustomBook = customBook;
 
     }
 
@@ -55,15 +57,17 @@ public class RxPaper {
                 if (!subscriber.isUnsubscribed()) {
                     try {
                         if (hasBook()) {
-                            Paper.book(mRxPaper.mCustomBook).write(key, value);
+                            Paper.book(mCustomBook).write(key, value);
                         } else {
                             Paper.book().write(key, value);
                         }
 
                         subscriber.onNext(true);
                     } catch (Exception e) {
-                        subscriber.onNext(true);
+                        subscriber.onError(new UnableToPerformOperationException("Can't delete"));
                     }
+                    subscriber.onCompleted();
+
                 }
             }
         });
@@ -99,6 +103,8 @@ public class RxPaper {
                     }
 
                     subscriber.onNext(value);
+                    subscriber.onCompleted();
+
                 }
             }
         });
@@ -131,6 +137,8 @@ public class RxPaper {
                     }
 
                     subscriber.onNext(value);
+                    subscriber.onCompleted();
+
                 }
             }
         });
@@ -160,8 +168,10 @@ public class RxPaper {
                         }
                         subscriber.onNext(true);
                     } catch (Exception e) {
-                        subscriber.onNext(true);
+                        subscriber.onError(new UnableToPerformOperationException("Can't delete"));
                     }
+
+                    subscriber.onCompleted();
                 }
             }
         });
@@ -180,11 +190,12 @@ public class RxPaper {
                         } else {
                             Paper.book().destroy();
                         }
-
                         subscriber.onNext(true);
                     } catch (Exception e) {
-                        subscriber.onNext(true);
+                        subscriber.onError(new UnableToPerformOperationException("Can't delete"));
                     }
+                    subscriber.onCompleted();
+
                 }
             }
         });
