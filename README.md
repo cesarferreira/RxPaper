@@ -6,7 +6,7 @@ RxPaper is a [RxJava](https://github.com/ReactiveX/RxJava) wrapper for the cool 
 
 #### Add dependency
 ```groovy
-compile 'com.cesarferreira.rxpaper:rxpaper:0.2.2'
+compile 'com.cesarferreira.rxpaper:rxpaper:{latest-version}'
 ```
 
 
