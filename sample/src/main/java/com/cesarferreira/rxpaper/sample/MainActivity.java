@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private Person defaultValue = null;
     private final String key = "PERSON_KEY";
     private String mCustomBook = "SOME_BOOK";
+
     Person person = new Person("Cesar", "ferreira");
     Person anotherPerson = new Person("Ivo", "ferreira");
 
@@ -86,11 +87,9 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onNext(Boolean isSuccessfull) {
-                        if (isSuccessfull) {
+                    public void onNext(Boolean success) {
+                        if (success) {
                             log("Write success!!!");
-
-
                         }
                     }
 
@@ -162,12 +161,15 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onNext(Boolean person) {
+                    public void onNext(Boolean success) {
                         log("Data destroyed");
                     }
                 });
 
 
+    }
+
+    public void destroyCustom(View view) {
         RxPaper.with(mContext, mCustomBook)
                 .destroy()
                 .subscribeOn(Schedulers.io())
@@ -184,8 +186,8 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onNext(Boolean person) {
-                        log("Data destroyed");
+                    public void onNext(Boolean success) {
+                        log("Custom data destroyed");
                     }
                 });
     }

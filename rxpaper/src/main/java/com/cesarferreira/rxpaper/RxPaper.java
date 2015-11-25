@@ -5,11 +5,12 @@ import android.text.TextUtils;
 
 import io.paperdb.Paper;
 import rx.Observable;
+import rx.Subscriber;
 
 public class RxPaper {
 
     private Context mContext;
-    private static RxPaper mRxPeople;
+    private static RxPaper mRxPaper;
     private static String mCustomBook;
 
 
@@ -22,86 +23,170 @@ public class RxPaper {
     }
 
     private static RxPaper init(Context context, String customBook) {
-        mRxPeople = new RxPaper(context);
-        mCustomBook = customBook;
+        mRxPaper = new RxPaper(context, customBook);
         Paper.init(context);
-        return mRxPeople;
+        return mRxPaper;
     }
 
-    private RxPaper(Context context) {
-        mContext = context;
+    private RxPaper(Context context, String customBook) {
+        this.mContext = context;
+        this.mCustomBook = customBook;
+
     }
 
     private static boolean hasBook() {
         return !TextUtils.isEmpty(mCustomBook);
     }
 
-    public <T> Observable<Boolean> write(String key, T value) {
 
-        try {
-            if (hasBook()) {
-                Paper.book(mCustomBook).write(key, value);
-            } else {
-                Paper.book().write(key, value);
+    /**
+     * Saves any types of POJOs or collections in Book storage.
+     *
+     * @param key   object key is used as part of object's file name
+     * @param value object to save, must have no-arg constructor, can't be null.
+     * @return this Book instance
+     */
+    public <T> Observable<Boolean> write(final String key, final T value) {
+
+        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+
+                if (!subscriber.isUnsubscribed()) {
+                    try {
+                        if (hasBook()) {
+                            Paper.book(mRxPaper.mCustomBook).write(key, value);
+                        } else {
+                            Paper.book().write(key, value);
+                        }
+
+                        subscriber.onNext(true);
+                    } catch (Exception e) {
+                        subscriber.onNext(true);
+                    }
+                }
             }
+        });
 
-            return Observable.just(true);
-        } catch (Exception e) {
-            return Observable.just(false);
-        }
+
     }
 
-    public <T> Observable<T> read(String key, T defaultValue) {
+    /**
+     * Instantiates saved object using original object class (e.g. LinkedList). Support limited
+     * backward and forward compatibility: removed fields are ignored, new fields have their
+     * default values.
+     * <p/>
+     * All instantiated objects must have no-arg constructors.
+     *
+     * @param key          object key to read
+     * @param defaultValue will be returned if key doesn't exist
+     * @return the saved object instance observable or null
+     */
+    public <T> Observable<T> read(final String key, final T defaultValue) {
 
-        T value;
+        return Observable.create(new Observable.OnSubscribe<T>() {
+            @Override
+            public void call(Subscriber<? super T> subscriber) {
 
-        if (hasBook()) {
-            value = Paper.book(mCustomBook).read(key, defaultValue);
-        } else {
-            value = Paper.book().read(key, defaultValue);
-        }
+                if (!subscriber.isUnsubscribed()) {
 
-        return Observable.just(value);
-    }
+                    T value;
 
-    public <T> Observable<T> read(String key) {
-        T value;
+                    if (hasBook()) {
+                        value = Paper.book(mCustomBook).read(key, defaultValue);
+                    } else {
+                        value = Paper.book().read(key, defaultValue);
+                    }
 
-        if (hasBook()) {
-            value = Paper.book(mCustomBook).read(key);
-        } else {
-            value = Paper.book().read(key);
-        }
-
-        return Observable.just(value);
-    }
-
-    public Observable<Boolean> delete(String key) {
-
-        try {
-            if (hasBook()) {
-                Paper.book(mCustomBook).delete(key);
-            } else {
-                Paper.book().delete(key);
+                    subscriber.onNext(value);
+                }
             }
-            return Observable.just(true);
-        } catch (Exception e) {
-            return Observable.just(false);
-        }
+        });
+    }
+
+    /**
+     * Instantiates saved object using original object class (e.g. LinkedList). Support limited
+     * backward and forward compatibility: removed fields are ignored, new fields have their
+     * default values.
+     * <p/>
+     * All instantiated objects must have no-arg constructors.
+     *
+     * @param key object key to read
+     * @return an Observable with the saved object instance or null
+     */
+    public <T> Observable<T> read(final String key) {
+
+        return Observable.create(new Observable.OnSubscribe<T>() {
+            @Override
+            public void call(Subscriber<? super T> subscriber) {
+
+                if (!subscriber.isUnsubscribed()) {
+
+                    T value;
+
+                    if (hasBook()) {
+                        value = Paper.book(mCustomBook).read(key);
+                    } else {
+                        value = Paper.book().read(key);
+                    }
+
+                    subscriber.onNext(value);
+                }
+            }
+        });
+
+
+    }
+
+
+    /**
+     * Delete saved object for given key if it is exist.
+     *
+     * @param key object key
+     */
+    public Observable<Boolean> delete(final String key) {
+
+        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+
+                if (!subscriber.isUnsubscribed()) {
+
+                    try {
+                        if (hasBook()) {
+                            Paper.book(mCustomBook).delete(key);
+                        } else {
+                            Paper.book().delete(key);
+                        }
+                        subscriber.onNext(true);
+                    } catch (Exception e) {
+                        subscriber.onNext(true);
+                    }
+                }
+            }
+        });
+
+
     }
 
     public Observable<Boolean> destroy() {
+        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                if (!subscriber.isUnsubscribed()) {
+                    try {
+                        if (hasBook()) {
+                            Paper.book(RxPaper.mCustomBook).destroy();
+                        } else {
+                            Paper.book().destroy();
+                        }
 
-        try {
-            if (hasBook()) {
-                Paper.book(mCustomBook).destroy();
-            } else {
-                Paper.book().destroy();
+                        subscriber.onNext(true);
+                    } catch (Exception e) {
+                        subscriber.onNext(true);
+                    }
+                }
             }
-
-            return Observable.just(true);
-        } catch (Exception e) {
-            return Observable.just(false);
-        }
+        });
     }
 }
