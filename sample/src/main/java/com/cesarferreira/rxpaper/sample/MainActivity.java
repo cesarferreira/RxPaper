@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(Throwable e) {
+                        log(e.getMessage());
 
                     }
 
@@ -132,14 +133,12 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        log(e.getMessage());
                     }
 
                     @Override
                     public void onNext(Person person) {
                         log(String.valueOf(person));
-
-
                     }
                 });
     }
