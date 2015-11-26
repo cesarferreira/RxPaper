@@ -188,6 +188,37 @@ public class RxPaper {
 
     }
 
+    /**
+     * Check if given key exist.
+     *
+     * @param key object key
+     */
+    public Observable<Boolean> exists(final String key) {
+
+        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+
+                if (!subscriber.isUnsubscribed()) {
+
+                    try {
+                        boolean exists;
+                        if (hasBook()) {
+                            exists = Paper.book(mCustomBook).exist(key);
+                        } else {
+                            exists = Paper.book().exist(key);
+                        }
+                        subscriber.onNext(exists);
+                    } catch (Exception e) {
+                        subscriber.onError(new UnableToPerformOperationException("Can't check if key exists"));
+                    }
+
+                    subscriber.onCompleted();
+                }
+            }
+        });
+    }
+
     public Observable<Boolean> destroy() {
         return Observable.create(new Observable.OnSubscribe<Boolean>() {
             @Override
