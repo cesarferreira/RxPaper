@@ -53,6 +53,25 @@ RxPaper.with(ctx)
        .subscribe();
 ```
 
+#### Exists
+Check if a key is persisted
+
+```java
+RxPaper.with(ctx)
+       .exists(key)
+       .subscribe(success -> /* all good */);
+```
+
+#### Get all keys
+
+Returns all keys for objects in the book.
+
+```java
+RxPaper.with(ctx)
+       .getAllKeys()
+       .subscribe(allKeys -> /* all good */);
+```
+
 #### Use custom book
 You can create custom Book with separate storage using
 

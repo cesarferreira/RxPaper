@@ -19,7 +19,7 @@ android {
 }
 
 dependencies {
-    compile 'io.paperdb:paperdb:1.0'
+    compile 'io.paperdb:paperdb:1.1'
     compile 'io.reactivex:rxjava:1.0.14'
 }
 
