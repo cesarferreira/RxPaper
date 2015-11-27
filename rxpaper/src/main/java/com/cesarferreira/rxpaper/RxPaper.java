@@ -2,10 +2,9 @@ package com.cesarferreira.rxpaper;
 
 import android.content.Context;
 import android.text.TextUtils;
-
 import com.cesarferreira.rxpaper.exceptions.UnableToPerformOperationException;
-
 import io.paperdb.Paper;
+import java.util.List;
 import rx.Observable;
 import rx.Subscriber;
 
@@ -211,6 +210,32 @@ public class RxPaper {
                         subscriber.onNext(exists);
                     } catch (Exception e) {
                         subscriber.onError(new UnableToPerformOperationException("Can't check if key exists"));
+                    }
+
+                    subscriber.onCompleted();
+                }
+            }
+        });
+    }
+
+    public Observable<List<String>> getAllKeys() {
+
+        return Observable.create(new Observable.OnSubscribe<List<String>>() {
+            @Override
+            public void call(Subscriber<? super List<String>> subscriber) {
+
+                if (!subscriber.isUnsubscribed()) {
+
+                    try {
+                        List<String> keys;
+                        if (hasBook()) {
+                            keys = Paper.book(mCustomBook).getAllKeys();
+                        } else {
+                            keys = Paper.book().getAllKeys();
+                        }
+                        subscriber.onNext(keys);
+                    } catch (Exception e) {
+                        subscriber.onError(new UnableToPerformOperationException("Can't collect all keys"));
                     }
 
                     subscriber.onCompleted();
