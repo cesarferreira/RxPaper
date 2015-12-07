@@ -216,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
                         StringBuilder output = new StringBuilder();
 
                         for (String s : allKeys) {
-                            output.append(s);
+                            output.append(s).append("\n");
                         }
 
                         log(String.valueOf(output));

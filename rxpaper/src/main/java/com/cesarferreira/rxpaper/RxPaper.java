@@ -18,15 +18,15 @@ public class RxPaper {
     private static String mCustomBook;
 
 
-    public static RxPaper with(Context context) {
+    public synchronized static RxPaper with(Context context) {
         return init(context, "");
     }
 
-    public static RxPaper with(Context context, String customBook) {
+    public synchronized static RxPaper with(Context context, String customBook) {
         return init(context, customBook);
     }
 
-    private static RxPaper init(Context context, String customBook) {
+    private synchronized static RxPaper init(Context context, String customBook) {
         mRxPaper = new RxPaper(context, customBook);
         Paper.init(context);
         return mRxPaper;
