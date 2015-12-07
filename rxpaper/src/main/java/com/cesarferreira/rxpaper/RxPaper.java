@@ -2,9 +2,12 @@ package com.cesarferreira.rxpaper;
 
 import android.content.Context;
 import android.text.TextUtils;
+
 import com.cesarferreira.rxpaper.exceptions.UnableToPerformOperationException;
-import io.paperdb.Paper;
+
 import java.util.List;
+
+import io.paperdb.Paper;
 import rx.Observable;
 import rx.Subscriber;
 
@@ -233,7 +236,12 @@ public class RxPaper {
                         } else {
                             keys = Paper.book().getAllKeys();
                         }
-                        subscriber.onNext(keys);
+                        if (keys.size() == 0) {
+                            subscriber.onError(new UnableToPerformOperationException("No keys for this book"));
+                        } else {
+                            subscriber.onNext(keys);
+                        }
+
                     } catch (Exception e) {
                         subscriber.onError(new UnableToPerformOperationException("Can't collect all keys"));
                     }
