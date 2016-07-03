@@ -10,60 +10,64 @@ import rx.Subscriber;
 
 public class RxPaper {
 
-    private Context mContext;
     private static RxPaper mRxPaper;
-    private static String mCustomBook;
-
-
-    public static RxPaper with(Context context) {
-        return init(context, "");
-    }
-
-    public static RxPaper with(Context context, String customBook) {
-        return init(context, customBook);
-    }
-
-    private static RxPaper init(Context context, String customBook) {
-        mRxPaper = new RxPaper(context, customBook);
-        Paper.init(context);
-        return mRxPaper;
-    }
-
-    private RxPaper(Context context, String customBook) {
-        this.mContext = context;
-        mCustomBook = customBook;
-
-    }
-
-    private static boolean hasBook() {
-        return !TextUtils.isEmpty(mCustomBook);
-    }
+    private static String sCustomBook;
+	
+	private Book mBook;
 
 
     /**
+     * Uses Paper's default book to create the observable operations
+     *
+     * @return instance of {@link RxPaper}
+     */
+    public static RxPaper book() {
+        return book(null);
+    }
+
+      /**
+     * Uses Paper's with a custom book to create the observable operations
+     *
+     * @return instance of {@link RxPaper}
+     */
+    public static RxPaper book(String customBook) {
+        if (mRxPaper == null || !TextUtils.equals(customBook, sCustomBook)) {
+            sCustomBook = customBook;
+            mRxPaper = new RxPaper(customBook);
+        }
+        return mRxPaper;
+    }
+
+    protected RxPaper(String customBook) {
+        mBook = (customBook != null) ? Paper.book(customBook) : Paper.book();
+    }
+	
+	 /**
+     * Gets the paper book used for the rx operations
+     * @return paper book {@link Book}
+     */
+    public Book getBook(){
+        return mBook;
+    }
+	/**
      * Saves any types of POJOs or collections in Book storage.
      *
      * @param key   object key is used as part of object's file name
      * @param value object to save, must have no-arg constructor, can't be null.
      * @return this Book instance
      */
-    public <T> Observable<Boolean> write(final String key, final T value) {
+    public <T> Observable<T> write(final String key, final T value) {
 
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+        return Observable.create(new Observable.OnSubscribe<T>() {
             @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
+            public void call(Subscriber<? super T> subscriber) {
 
                 if (!subscriber.isUnsubscribed()) {
                     try {
-                        if (hasBook()) {
-                            Paper.book(mCustomBook).write(key, value);
-                        } else {
-                            Paper.book().write(key, value);
-                        }
-
-                        subscriber.onNext(true);
+                        mBook.write(key, value);
+                        subscriber.onNext(value);
                     } catch (Exception e) {
-                        subscriber.onError(new UnableToPerformOperationException("Can't write"));
+                        subscriber.onError(new AndroidException("Can't write: " + e.getMessage()));
                     }
                     subscriber.onCompleted();
 
@@ -78,7 +82,7 @@ public class RxPaper {
      * Instantiates saved object using original object class (e.g. LinkedList). Support limited
      * backward and forward compatibility: removed fields are ignored, new fields have their
      * default values.
-     * <p/>
+     * <p>
      * All instantiated objects must have no-arg constructors.
      *
      * @param key          object key to read
@@ -92,19 +96,11 @@ public class RxPaper {
             public void call(Subscriber<? super T> subscriber) {
 
                 if (!subscriber.isUnsubscribed()) {
-
-                    T value;
-
-                    if (hasBook()) {
-                        value = Paper.book(mCustomBook).read(key, defaultValue);
-                    } else {
-                        value = Paper.book().read(key, defaultValue);
-                    }
-
-                    if (value == null) {
-                        subscriber.onError(new UnableToPerformOperationException(key + " is empty"));
-                    } else {
-                        subscriber.onNext(value);
+                    try {
+                        subscriber.onNext(mBook.read(key, defaultValue));
+                    } catch (Exception e) {
+                        subscriber.onError(new AndroidException("Error while reading the key" +
+                                key + ", details: " + e.getMessage()));
                     }
                     subscriber.onCompleted();
 
@@ -117,7 +113,7 @@ public class RxPaper {
      * Instantiates saved object using original object class (e.g. LinkedList). Support limited
      * backward and forward compatibility: removed fields are ignored, new fields have their
      * default values.
-     * <p/>
+     * <p>
      * All instantiated objects must have no-arg constructors.
      *
      * @param key object key to read
@@ -128,23 +124,18 @@ public class RxPaper {
         return Observable.create(new Observable.OnSubscribe<T>() {
             @Override
             public void call(Subscriber<? super T> subscriber) {
-
                 if (!subscriber.isUnsubscribed()) {
-
-                    T value;
-
-                    if (hasBook()) {
-                        value = Paper.book(mCustomBook).read(key);
-                    } else {
-                        value = Paper.book().read(key);
+                    try {
+                        T value = mBook.read(key);
+                        //Eval this, maybe not error
+                        //if (value == null) {
+                        //    subscriber.onError(new AndroidException(key + " is empty"));
+                        //} else {
+                            subscriber.onNext(value);
+                        //}
+                    } catch (Exception e) {
+                        subscriber.onError(e);
                     }
-
-                    if (value == null) {
-                        subscriber.onError(new UnableToPerformOperationException(key + " is empty"));
-                    } else {
-                        subscriber.onNext(value);
-                    }
-
                     subscriber.onCompleted();
 
                 }
@@ -160,23 +151,19 @@ public class RxPaper {
      *
      * @param key object key
      */
-    public Observable<Boolean> delete(final String key) {
+    public <T> Observable<T> delete(final String key) {
 
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+        return Observable.create(new Observable.OnSubscribe<T>() {
             @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
+            public void call(Subscriber<? super T> subscriber) {
 
                 if (!subscriber.isUnsubscribed()) {
-
                     try {
-                        if (hasBook()) {
-                            Paper.book(mCustomBook).delete(key);
-                        } else {
-                            Paper.book().delete(key);
-                        }
-                        subscriber.onNext(true);
+                        T value = mBook.read(key);
+                        mBook.delete(key);
+                        subscriber.onNext(value);
                     } catch (Exception e) {
-                        subscriber.onError(new UnableToPerformOperationException("Can't delete"));
+                        subscriber.onError(e);
                     }
 
                     subscriber.onCompleted();
@@ -201,15 +188,9 @@ public class RxPaper {
                 if (!subscriber.isUnsubscribed()) {
 
                     try {
-                        boolean exists;
-                        if (hasBook()) {
-                            exists = Paper.book(mCustomBook).exist(key);
-                        } else {
-                            exists = Paper.book().exist(key);
-                        }
-                        subscriber.onNext(exists);
+                        subscriber.onNext(mBook.exist(key));
                     } catch (Exception e) {
-                        subscriber.onError(new UnableToPerformOperationException("Can't check if key exists"));
+                        subscriber.onError(e);
                     }
 
                     subscriber.onCompleted();
@@ -227,15 +208,9 @@ public class RxPaper {
                 if (!subscriber.isUnsubscribed()) {
 
                     try {
-                        List<String> keys;
-                        if (hasBook()) {
-                            keys = Paper.book(mCustomBook).getAllKeys();
-                        } else {
-                            keys = Paper.book().getAllKeys();
-                        }
-                        subscriber.onNext(keys);
+                        subscriber.onNext(mBook.getAllKeys());
                     } catch (Exception e) {
-                        subscriber.onError(new UnableToPerformOperationException("Can't collect all keys"));
+                        subscriber.onError(e);
                     }
 
                     subscriber.onCompleted();
@@ -250,14 +225,10 @@ public class RxPaper {
             public void call(Subscriber<? super Boolean> subscriber) {
                 if (!subscriber.isUnsubscribed()) {
                     try {
-                        if (hasBook()) {
-                            Paper.book(RxPaper.mCustomBook).destroy();
-                        } else {
-                            Paper.book().destroy();
-                        }
+                        mBook.destroy();
                         subscriber.onNext(true);
                     } catch (Exception e) {
-                        subscriber.onError(new UnableToPerformOperationException("Can't destroy"));
+                        subscriber.onError(e);
                     }
                     subscriber.onCompleted();
 
