@@ -9,13 +9,30 @@ RxPaper is a [RxJava](https://github.com/ReactiveX/RxJava) wrapper for the cool 
 compile 'com.cesarferreira.rxpaper:rxpaper:{latest-version}'
 ```
 
+#### Install
+
+Init the library in your Application class
+
+```java
+public class SampleApplication extends Application {
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        RxPaper.init(this);
+    }
+}
+
+```
+
 
 #### Save
 Save data object. **Your custom classes must have no-arg constructor.**
 Paper creates separate data file for each key.
 
 ```java
-RxPaper.with(ctx)
+RxPaper.book()
         .write(key, value)
         .subscribe(success -> /* all good */ );
 
@@ -29,7 +46,7 @@ Use default values if object doesn't exist in the storage.
 
 ```java
 
-RxPaper.with(ctx)
+RxPaper.book()
         .read(key, defaultPersonValue)
         .subscribe(person -> /* all good */ );
 
@@ -40,7 +57,7 @@ RxPaper.with(ctx)
 Delete data for one key.
 
 ```java
-RxPaper.with(ctx)
+RxPaper.book()
        .delete(key)
        .subscribe();
 ```
@@ -48,7 +65,7 @@ RxPaper.with(ctx)
 Completely destroys Paper storage.
 
 ```java
-RxPaper.with(ctx)
+RxPaper.book()
        .destroy()
        .subscribe();
 ```
@@ -57,7 +74,7 @@ RxPaper.with(ctx)
 Check if a key is persisted
 
 ```java
-RxPaper.with(ctx)
+RxPaper.book()
        .exists(key)
        .subscribe(success -> /* all good */);
 ```
@@ -67,16 +84,16 @@ RxPaper.with(ctx)
 Returns all keys for objects in the book.
 
 ```java
-RxPaper.with(ctx)
+RxPaper.book()
        .getAllKeys()
        .subscribe(allKeys -> /* all good */);
 ```
 
 #### Use custom book
-You can create custom Book with separate storage using
+You can create custom Book book separate storage using
 
 ```java
-RxPaper.with(ctx, "custom-book")...;
+RxPaper.book("custom-book")...;
 ```
 
 Any changes in one book doesn't affect to others books.
