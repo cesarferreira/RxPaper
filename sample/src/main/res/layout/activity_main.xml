@@ -23,32 +23,32 @@
         android:orientation="vertical"
         android:padding="10dp">
 
-        <android.support.v7.widget.AppCompatButton
+        <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="writeCustom"
             android:text="Write custom book" />
 
-        <android.support.v7.widget.AppCompatButton
+        <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="readCustom"
             android:text="Read custom book" />
 
-        <android.support.v7.widget.AppCompatButton
+        <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="write"
             android:text="Write" />
 
 
-        <android.support.v7.widget.AppCompatButton
+        <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="read"
             android:text="Read" />
 
-        <android.support.v7.widget.AppCompatButton
+        <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="getAllKeys"
@@ -59,14 +59,14 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <android.support.v7.widget.AppCompatButton
+            <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="50"
                 android:onClick="destroyCustom"
                 android:text="Destroy custom" />
 
-            <android.support.v7.widget.AppCompatButton
+            <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="50"

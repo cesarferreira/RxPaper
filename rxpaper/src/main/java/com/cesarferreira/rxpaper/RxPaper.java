@@ -16,6 +16,10 @@ public class RxPaper {
 
 	private Book mBook;
 
+	public static void init(Context context) {
+		Paper.init(context);
+	}
+
 	/**
 	 * Uses Paper's default book to create the observable operations
 	 *
@@ -38,7 +42,7 @@ public class RxPaper {
 		return mRxPaper;
 	}
 
-	protected RxPaper(String customBook) {
+	private RxPaper(String customBook) {
 		mBook = (customBook != null) ? Paper.book(customBook) : Paper.book();
 	}
 
@@ -230,4 +234,5 @@ public class RxPaper {
 			}
 		});
 	}
+
 }

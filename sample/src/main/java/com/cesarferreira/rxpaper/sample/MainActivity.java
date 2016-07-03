@@ -17,7 +17,6 @@ import rx.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
-	private Context mContext = null;
 	private TextView targetTextView;
 
 	private Person defaultValue = null;
@@ -33,8 +32,6 @@ public class MainActivity extends AppCompatActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
-		mContext = getApplicationContext();
 
 		targetTextView = (TextView) findViewById(R.id.targetTextView);
 
