@@ -1,5 +1,5 @@
 # RxPaper
-<a href="http://www.methodscount.com/?lib=com.cesarferreira.rxpaper%3Arxpaper%3A0.4.1"><img src="https://img.shields.io/badge/Size-11 KB-e91e63.svg"/></a>
+<a href="http://www.methodscount.com/?lib=com.cesarferreira.rxpaper%3Arxpaper%3A0.4.1"><img src="https://img.shields.io/badge/Size-11 KB-e91e63.svg"/></a> [![Build Status](https://travis-ci.org/cesarferreira/RxPaper.svg?branch=master)](https://travis-ci.org/cesarferreira/RxPaper)
 
 
 RxPaper is a [RxJava](https://github.com/ReactiveX/RxJava) wrapper for the cool [paper](https://github.com/pilgr/Paper) library, a [fast](#benchmark-results) NoSQL data storage for Android that lets you **save/restore** Java objects by using efficient [Kryo](https://github.com/EsotericSoftware/kryo) serialization and handling data structure changes automatically.
