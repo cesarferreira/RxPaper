@@ -1,10 +1,35 @@
 language: android
-jdk: oraclejdk7
+
 android:
   components:
-  - platform-tools
-  - tools
-  - build-tools-24.0.0
-  - android-23
-  - extra-android-m2repository
-script: ./gradlew -PdisablePreDex build
+    - tools
+    - platform-tools
+    - build-tools-24.0.2
+    - extra-android-m2repository
+    - android-24
+
+jdk:
+  - oraclejdk8
+
+# after_success:
+#   - .buildscript/deploy_snapshot.sh
+
+env:
+  global:
+    - secure: "vkFMccJMRLUUHNOZUsmBDT1JaPN0leZ7q3V"
+
+branches:
+  except:
+    - gh-pages
+
+notifications:
+  email: false
+
+sudo: false
+
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+    - $HOME/.gradle/native/
+    - $HOME/.gradle/daemon/native/
