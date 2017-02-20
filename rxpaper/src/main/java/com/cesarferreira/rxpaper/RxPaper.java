@@ -1,7 +1,6 @@
 package com.cesarferreira.rxpaper;
 
 import android.content.Context;
-import android.text.TextUtils;
 import com.cesarferreira.rxpaper.exceptions.UnableToPerformOperationException;
 import io.paperdb.Book;
 import io.paperdb.Paper;
@@ -10,9 +9,6 @@ import rx.Observable;
 import rx.Subscriber;
 
 public class RxPaper {
-
-	private static RxPaper mRxPaper;
-	private static String sCustomBook;
 
 	private Book mBook;
 
@@ -35,11 +31,7 @@ public class RxPaper {
 	 * @return instance of {@link RxPaper}
 	 */
 	public static RxPaper book(String customBook) {
-		if (mRxPaper == null || !TextUtils.equals(customBook, sCustomBook)) {
-			sCustomBook = customBook;
-			mRxPaper = new RxPaper(customBook);
-		}
-		return mRxPaper;
+		return new RxPaper(customBook);
 	}
 
 	private RxPaper(String customBook) {
