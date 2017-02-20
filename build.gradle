@@ -6,18 +6,20 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.2.0'
-        classpath 'com.github.dcendents:android-maven-plugin:1.2'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
+    }
+
+    ext {
+        ext_groupId = 'com.cesarferreira'
+        ext_artifactId = 'RxPaper'
+        ext_version = '0.5.0'
+        ext_url = 'https://github.com/cesarferreira/RxPaper'
+        ext_vcsUrl = 'https://github.com/cesarferreira/RxPaper.git'
+        ext_description = 'Reactive extension for NoSQL data storage on Android'
     }
 }
 
-def isReleaseBuild() {
-    return version.contains("SNAPSHOT") == false
-}
-
 allprojects {
-    version = VERSION_NAME
-    group = GROUP
-
     repositories {
         jcenter()
     }

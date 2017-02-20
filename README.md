@@ -10,14 +10,20 @@ For the RxJava 2 version please go to [RxPaper2](https://github.com/pakoito/RxPa
 ![Paper icon](https://raw.githubusercontent.com/pilgr/Paper/master/paper_icon.png)
 
 
-### What's [new](/CHANGELOG.md) in 2.0
+### What's new for the new `PaperDB 2.0` (starting on `0.5.0`+ version)
 * Update internal Kryo serializer to 4.0. The data format is changed, but Paper supports backward data compatibility automatically;
 * Now 58% less methods count : [4037](http://www.methodscount.com/?lib=io.paperdb%3Apaperdb%3A2.0);
 * Depends on data structure you may experience faster reading but slower writing.
 
 #### Add dependency
 ```groovy
-compile 'com.cesarferreira.rxpaper:rxpaper:{latest-version}'
+repositories {
+    jcenter()
+    maven { url "https://jitpack.io" }
+ }
+dependencies {
+    compile 'com.cesarferreira.rxpaper:rxpaper:0.5.0'
+}
 ```
 
 #### Install

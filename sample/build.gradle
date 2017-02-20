@@ -5,7 +5,6 @@ android {
     buildToolsVersion '24.0.3'
 
     defaultConfig {
-        applicationId "com.cesarferreira.rxpaper.sample"
         minSdkVersion 16
         targetSdkVersion 25
         versionCode 1

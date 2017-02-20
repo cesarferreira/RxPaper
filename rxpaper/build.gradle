@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
 
 android {
     compileSdkVersion 25
@@ -27,28 +28,27 @@ dependencies {
     compile 'io.reactivex:rxjava:1.1.6'
 }
 
-
 // build a jar with source files
 task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
     classifier = 'sources'
 }
+
+task javadoc(type: Javadoc) {
+    failOnError false
+    source = android.sourceSets.main.java.sourceFiles
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    classpath += configurations.compile
+}
+
+// build a jar with javadoc
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
 artifacts {
     archives sourcesJar
+    archives javadocJar
 }
 
-
-task clearJar(type: Delete) {
-    delete 'build/libs/rxpaper-' + project.VERSION_NAME + '.jar'
-}
-
-task makeJar(type: Copy) {
-    from('build/bundles/debug/')
-    into('build/libs/')
-    include('classes.jar')
-    rename('classes.jar', 'rxpaper-' + project.VERSION_NAME + '.jar')
-}
-
-makeJar.dependsOn(clearJar, build)
-
-apply from: '../maven_push.gradle'
