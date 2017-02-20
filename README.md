@@ -6,6 +6,12 @@ RxPaper is a [RxJava](https://github.com/ReactiveX/RxJava) wrapper for the cool 
 
 ![Paper icon](https://raw.githubusercontent.com/pilgr/Paper/master/paper_icon.png)
 
+
+### What's [new](/CHANGELOG.md) in 2.0
+* Update internal Kryo serializer to 4.0. The data format is changed, but Paper supports backward data compatibility automatically;
+* Now 58% less methods count : [4037](http://www.methodscount.com/?lib=io.paperdb%3Apaperdb%3A2.0);
+* Depends on data structure you may experience faster reading but slower writing.
+
 #### Add dependency
 ```groovy
 compile 'com.cesarferreira.rxpaper:rxpaper:{latest-version}'
